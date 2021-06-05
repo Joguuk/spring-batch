@@ -3,3 +3,7 @@ spring:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;
     schema: classpath:/org/springframework/batch/core/schema-h2.sql
+  batch:
+    job:
+      enabled: false  # CommandLineRunner 설정 해제
+      # CommandLineRunner는 구동 시점에 특정 작업이 실행될 수 있도록 해주는 역할을 하는데, 스케쥴러 사용을 위해 해제
