@@ -1,10 +1,15 @@
 package me.jjozerg.baseballbatch;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Configuration;
 
-@SpringBootTest
-class BaseballBatchApplicationTests {
+@Configuration
+@EnableBatchProcessing
+@EnableAutoConfiguration
+public class BaseballBatchApplicationTests {
 
     @Test
     void contextLoads() {

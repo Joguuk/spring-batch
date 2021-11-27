@@ -17,6 +17,9 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.EntityManagerFactory;
 
+/**
+ * The type Processor convert job configuration.
+ */
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
@@ -31,6 +34,13 @@ public class ProcessorConvertJobConfiguration {
     @Value("${chunkSize:1000}")
     private int chunkSize;
 
+    /**
+     * method : job
+     * author : Jo Guk / jjozerg@gmail.com
+     * description :
+     *
+     * @return job
+     */
     @Bean(JOB_NAME)
     public Job job() {
         return jobBuilderFactory.get(JOB_NAME)
@@ -39,6 +49,13 @@ public class ProcessorConvertJobConfiguration {
                 .build();
     }
 
+    /**
+     * method : step
+     * author : Jo Guk / jjozerg@gmail.com
+     * description :
+     *
+     * @return step
+     */
     @Bean(BEAN_PREFIX + "step")
     public Step step() {
         return stepBuilderFactory.get(BEAN_PREFIX + "step")
@@ -50,6 +67,13 @@ public class ProcessorConvertJobConfiguration {
                 ;
     }
 
+    /**
+     * method : reader
+     * author : Jo Guk / jjozerg@gmail.com
+     * description :
+     *
+     * @return jpa paging item reader
+     */
     @Bean
     public JpaPagingItemReader reader() {
         return new JpaPagingItemReaderBuilder<Teacher>()
@@ -57,10 +81,16 @@ public class ProcessorConvertJobConfiguration {
                 .entityManagerFactory(entityManagerFactory)
                 .pageSize(chunkSize)
                 .queryString("SELECT t FROM Teacher t")
-                .build()
-                ;
+                .build();
     }
 
+    /**
+     * method : processor
+     * author : Jo Guk / jjozerg@gmail.com
+     * description :
+     *
+     * @return item processor
+     */
     @Bean
     public ItemProcessor<Teacher, String> processor() {
         return teacher -> teacher.getName();

@@ -6,6 +6,7 @@ import me.jjozerg.baseballbatch.entity.Pay;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JpaItemWriter;
@@ -17,13 +18,25 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.EntityManagerFactory;
 
+/**
+ * fileName : JpaPayWriterJobConfiguration.java
+ * author : joguk
+ * date : 2021/11/22 1:48 오후
+ * description :
+ * <pre></pre>
+ * ===========================================================
+ * DATE AUTHOR NOTE
+ * 2021/11/22 joguk 최초 생성
+ * -----------------------------------------------------------
+ */
+
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
 public class JpaPayWriterJobConfiguration {
-    public static final String BEAN_PREFIX = "JpaPayWriter";
-    public static final String JOB_NAME = BEAN_PREFIX + "job";
-    private static final String STEP_NAME = BEAN_PREFIX + "step";
+    private static final String BEAN_PREFIX = "JpaPayWriter";
+    private static final String JOB_NAME = BEAN_PREFIX + "Job";
+    private static final String STEP_NAME = BEAN_PREFIX + "Step";
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
@@ -41,19 +54,20 @@ public class JpaPayWriterJobConfiguration {
     }
 
     @Bean(STEP_NAME)
+    @JobScope
     public Step step() {
         return stepBuilderFactory.get(STEP_NAME)
                 .<Pay, Pay>chunk(chunkSize)
-                .reader(JpaPayReader())
+                .reader(jpaPayPagingReader())
                 .processor(JpaPayProcessor())
                 .writer(JpaPayWriter())
                 .build();
     }
 
     @Bean
-    public JpaPagingItemReader<Pay> JpaPayReader() {
+    public JpaPagingItemReader<Pay> jpaPayPagingReader() {
         return new JpaPagingItemReaderBuilder<Pay>()
-                .name("JpaPayReader")
+                .name("jpaPayPagingReader")
                 .entityManagerFactory(entityManagerFactory)
                 .pageSize(chunkSize)
                 .queryString("SELECT p FROM Pay p")
